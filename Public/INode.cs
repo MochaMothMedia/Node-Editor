@@ -2,10 +2,10 @@ using UnityEngine;
 
 namespace FedoraDev.NodeEditor
 {
-    public interface INode
+    public interface INode : IProduce<INode>
     {
         string Name { get; }
-        IConnection[] Connections { get; }
+        IConnection[] Connections { get; set; }
         Vector2 Position { get; set; }
         Vector2 Size { get; }
         Vector2 ConnectPosition { get; }

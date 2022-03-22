@@ -177,27 +177,6 @@ namespace FedoraDev.NodeEditor.Editor
 			ProcessEvent(Event.current);
 		}
 
-		void DrawUI()
-		{
-			float labelWidth = 100f;
-			float buttonWidth = 100f;
-			float closeWidth = 50f;
-
-			if (GUI.Button(new Rect(position.width - closeWidth - 5, 5, closeWidth, 25), $"Close"))
-			{
-				NodeWeb = null;
-				SaveSettings();
-				Initialize();
-				throw new ClearGUIException();
-			}
-
-			GUI.Box(new Rect(position.width / 2, 5, labelWidth, 25), $"({NodeWeb.Offset.x - (position.width / 2)}, {NodeWeb.Offset.y - (position.height / 2)})");
-			if (GUI.Button(new Rect((position.width / 2) - buttonWidth, 5, buttonWidth, 25), "Recenter"))
-			{
-				NodeWeb.Offset = Vector2.zero + (position.size / 2);
-			}
-		}
-
 		void DrawGrid(float spacing, float opacity, Color color)
 		{
 			if (Event.current.type != EventType.Repaint)
@@ -266,7 +245,7 @@ namespace FedoraDev.NodeEditor.Editor
 
 				Vector2 nodeAPos = NodeVisualPosition(connection.NodeA.Position, connection.NodeA.Size) + (connection.NodeA.Size / 2);
 				Vector2 nodeBPos = NodeVisualPosition(connection.NodeB.Position, connection.NodeB.Size) + (connection.NodeB.Size / 2);
-				Vector2 centerPos = (nodeAPos + nodeBPos) / 2;
+				Vector2 centerPos = Vector2.Lerp(nodeAPos, nodeBPos, 0.5f) + new Vector2(0, -15);
 				Vector2 floatPos = centerPos + new Vector2(0, 15);
 
 				Handles.color = Color.white;
@@ -291,6 +270,27 @@ namespace FedoraDev.NodeEditor.Editor
 				INode node = NodeWeb.Nodes[i];
 				GUI.Box(new Rect(NodeVisualPosition(node.Position, node.Size), node.Size), node.Name, EditorStyles.NodeStyle);
 				GUI.Box(new Rect(NodeVisualPosition(node.Position, node.Size) + node.ConnectPosition, node.ConnectSize), "->");
+			}
+		}
+
+		void DrawUI()
+		{
+			float labelWidth = 100f;
+			float buttonWidth = 100f;
+			float closeWidth = 50f;
+
+			if (GUI.Button(new Rect(position.width - closeWidth - 5, 5, closeWidth, 25), $"Close"))
+			{
+				NodeWeb = null;
+				SaveSettings();
+				Initialize();
+				throw new ClearGUIException();
+			}
+
+			GUI.Box(new Rect(position.width / 2, 5, labelWidth, 25), $"({NodeWeb.Offset.x - (position.width / 2)}, {NodeWeb.Offset.y - (position.height / 2)})");
+			if (GUI.Button(new Rect((position.width / 2) - buttonWidth, 5, buttonWidth, 25), "Recenter"))
+			{
+				NodeWeb.Offset = Vector2.zero + (position.size / 2);
 			}
 		}
 		#endregion
@@ -318,6 +318,29 @@ namespace FedoraDev.NodeEditor.Editor
 				case EventType.MouseUp:
 					if (currentEvent.button == 0)
 						OnLeftMouseUp(currentEvent.mousePosition);
+					break;
+
+				case EventType.DragUpdated:
+					if ((DragAndDrop.objectReferences[0] as INode) != null)
+					{
+						DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
+						DragAndDrop.AcceptDrag();
+					}
+					break;
+
+				case EventType.DragPerform:
+					for (int i = 0; i < DragAndDrop.objectReferences.Length; i++)
+					{
+						INode newNode = DragAndDrop.objectReferences[i] as INode;
+						if (newNode == null)
+							continue;
+
+						currentEvent.Use();
+
+						newNode.Position = currentEvent.mousePosition - NodeWeb.Offset;
+						NodeWeb.AddNode(newNode);
+						AssetDatabase.SaveAssets();
+					}
 					break;
 			}
 		}
@@ -445,6 +468,9 @@ namespace FedoraDev.NodeEditor.Editor
 		void OnClickRemoveNode(INode node)
 		{
 			NodeWeb.RemoveNode(node);
+			for (int i = 0; i < node.Connections.Length; i++)
+				NodeWeb.RemoveConnection(node.Connections[i]);
+			
 			AssetDatabase.SaveAssets();
 		}
 		#endregion

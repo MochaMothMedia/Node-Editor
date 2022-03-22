@@ -24,7 +24,7 @@ namespace FedoraDev.NodeEditor.Editor
 
 			Type[] classes = AppDomain.CurrentDomain.GetAssemblies()
 						  .SelectMany(assembly => assembly.GetTypes())
-						  .Where(cls => interfaceType.IsAssignableFrom(cls) && cls.IsClass)
+						  .Where(cls => interfaceType.IsAssignableFrom(cls) && cls.IsClass && !cls.IsAbstract)
 						  .ToArray();
 
 			if (_implements.ContainsKey(interfaceType))

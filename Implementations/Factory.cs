@@ -9,7 +9,9 @@ namespace FedoraDev.NodeEditor.Implementations
 	public class Factory : SerializedScriptableObject, IFactory
 	{
 		[SerializeField] IConnection _connectionFab;
+		[SerializeField] INode _nodeFab;
 
 		public IConnection ProduceConnection() => _connectionFab.Produce(this);
+		public INode ProduceNode() => _nodeFab.Produce(this);
 	}
 }
