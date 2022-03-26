@@ -1,6 +1,4 @@
 using Sirenix.OdinInspector;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace FedoraDev.NodeEditor.Implementations
@@ -10,8 +8,10 @@ namespace FedoraDev.NodeEditor.Implementations
 	{
 		[SerializeField] IConnection _connectionFab;
 		[SerializeField] INode _nodeFab;
+		[SerializeField] IAssetNode _assetNodeFab;
 
 		public IConnection ProduceConnection() => _connectionFab.Produce(this);
 		public INode ProduceNode() => _nodeFab.Produce(this);
+		public IAssetNode ProduceAssetNode() => _assetNodeFab.Produce(this) as IAssetNode;
 	}
 }

@@ -1,3 +1,4 @@
+using FedoraDev.NodeEditor.Implementations;
 using System;
 using UnityEditor;
 using UnityEngine;
@@ -70,7 +71,7 @@ namespace FedoraDev.NodeEditor.Editor
 			NodeEditorUtility.CacheResults<INodeWeb>();
 			NodeEditorUtility.CacheResults<INode>();
 			string title = NodeWeb == null ? "New" : NodeWeb.Name;
-            titleContent = new GUIContent($"PoI Node Editor - {title}");
+            titleContent = new GUIContent($"Node Editor - {title}");
 		}
 		#endregion
 
@@ -321,7 +322,7 @@ namespace FedoraDev.NodeEditor.Editor
 					break;
 
 				case EventType.DragUpdated:
-					if ((DragAndDrop.objectReferences[0] as INode) != null)
+					if ((DragAndDrop.objectReferences[0] as INode) != null || (DragAndDrop.objectReferences[0] as ScriptableObject) != null)
 					{
 						DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
 						DragAndDrop.AcceptDrag();
@@ -331,14 +332,29 @@ namespace FedoraDev.NodeEditor.Editor
 				case EventType.DragPerform:
 					for (int i = 0; i < DragAndDrop.objectReferences.Length; i++)
 					{
+						Vector2 pos = currentEvent.mousePosition - NodeWeb.Offset;
 						INode newNode = DragAndDrop.objectReferences[i] as INode;
-						if (newNode == null)
-							continue;
+						if (newNode != null)
+						{
+							currentEvent.Use();
 
-						currentEvent.Use();
+							newNode.Position = pos;
+							NodeWeb.AddNode(newNode);
+						}
+						else
+						{
+							ScriptableObject scriptable = DragAndDrop.objectReferences[i] as ScriptableObject;
+							if (scriptable == null)
+								continue;
 
-						newNode.Position = currentEvent.mousePosition - NodeWeb.Offset;
-						NodeWeb.AddNode(newNode);
+							currentEvent.Use();
+
+							IAssetNode assetNode = Factory.ProduceAssetNode();
+							assetNode.Asset = scriptable;
+							assetNode.Position = pos;
+							NodeWeb.AddNode(assetNode);
+						}
+
 						AssetDatabase.SaveAssets();
 					}
 					break;

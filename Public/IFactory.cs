@@ -4,5 +4,6 @@ namespace FedoraDev.NodeEditor
     {
         IConnection ProduceConnection();
         INode ProduceNode();
+        IAssetNode ProduceAssetNode();
     }
 }
