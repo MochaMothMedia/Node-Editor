@@ -329,7 +329,7 @@ namespace FedoraDev.NodeEditor.Editor
 			_targetNode = EditorGUI.Popup(new Rect(10, currentY, flyoutWidth - 10, 25), _targetNode, NodeWeb.Nodes.Select(n => n.Name).ToArray());
 			currentY += 30;
 
-			for (int i = 0; i < _requiredNodes.Count; i++)
+			for (int i = 0; i < _requiredNodes?.Count; i++)
 			{
 				int index = i;
 				_requiredNodes[i] = EditorGUI.Popup(new Rect(10, currentY, flyoutWidth - 30, 25), _requiredNodes[i], NodeWeb.Nodes.Select(n => n.Name).ToArray());
