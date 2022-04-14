@@ -4,7 +4,7 @@
 	{
         INode NodeA { get; set; }
 		INode NodeB { get; set; }
-        float Distance { get; set; }
+        int Distance { get; set; }
 
 		INode GetOtherNode(INode node);
 	}

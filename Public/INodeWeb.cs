@@ -13,6 +13,6 @@ namespace FedoraDev.NodeEditor
         void RemoveNode(INode node);
         void AddConnection(IConnection connection);
         void RemoveConnection(IConnection connection);
-        //IPointOfInterest[] GetShortestPath(IPointOfInterest start, IPointOfInterest end, params IPointOfInterest[] mustVisitPOIs);
+        INode[] GetPath(INode startNode, INode endNode);
     }
 }

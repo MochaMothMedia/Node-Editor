@@ -260,7 +260,7 @@ namespace FedoraDev.NodeEditor.Editor
 					GUI.changed = true;
 				}
 
-				connection.Distance = EditorGUI.FloatField(new Rect(floatPos.x - 25, floatPos.y, 50, 20), connection.Distance);
+				connection.Distance = EditorGUI.IntField(new Rect(floatPos.x - 25, floatPos.y, 50, 20), connection.Distance);
 			}
 		}
 

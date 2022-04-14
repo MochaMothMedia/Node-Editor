@@ -7,6 +7,7 @@ namespace FedoraDev.NodeEditor.Implementations
 	[CreateAssetMenu(fileName = "New Node Web", menuName = "Node Editor/Node Web")]
 	public class ScriptableNodeWeb : SerializedScriptableObject, INodeWeb
 	{
+		#region Properties
 		public string Name => base.name;
 
 		public INode[] Nodes
@@ -55,11 +56,16 @@ namespace FedoraDev.NodeEditor.Implementations
 				SetSelfDirty();
 			}
 		}
+		#endregion
 
+		#region Members
+		[SerializeField] IPathingAlgorithm _pathingAlgorithm;
 		[SerializeField, ReadOnly] Vector2 _offset;
 		[SerializeField, ReadOnly] INode[] _nodes = new INode[0];
 		[SerializeField, ReadOnly] IConnection[] _connections = new IConnection[0];
+		#endregion
 
+		#region Node Management
 		public void AddNode(INode node)
 		{
 			INode[] newNodes = new INode[_nodes.Length + 1];
@@ -86,7 +92,9 @@ namespace FedoraDev.NodeEditor.Implementations
 			_nodes = newNodes.ToArray();
 			SetSelfDirty();
 		}
+		#endregion
 
+		#region Connection Management
 		public void AddConnection(IConnection connection)
 		{
 			IConnection[] newConnections = new IConnection[_connections.Length + 1];
@@ -113,7 +121,11 @@ namespace FedoraDev.NodeEditor.Implementations
 			_connections = newConnections.ToArray();
 			SetSelfDirty();
 		}
+		#endregion
 
+		public INode[] GetPath(INode startNode, INode endNode) => _pathingAlgorithm.GetPath(this, startNode, endNode);
+
+		#region Editor Junk
 		void SetSelfDirty()
 		{
 #if UNITY_EDITOR
@@ -153,6 +165,7 @@ namespace FedoraDev.NodeEditor.Implementations
 		//	return nodeWeb;
 		//}
 #endif
+		#endregion
 		#endregion
 	}
 }
