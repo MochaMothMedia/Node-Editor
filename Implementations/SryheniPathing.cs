@@ -35,7 +35,7 @@ namespace FedoraDev.NodeEditor.Implementations
 			{
 				List<RouteNode> nodes = new List<RouteNode>();
 				for (int j = 0; j < byte.MaxValue; j++)
-					nodes.Add(new RouteNode(i, 0));
+					nodes.Add(new RouteNode(i, int.MaxValue));
 				_distance.Add(nodes);
 			}
 		}
@@ -47,6 +47,7 @@ namespace FedoraDev.NodeEditor.Implementations
 				for (int j = 0; j < _distance[i].Count; j++)
 				{
 					_distance[i][j].Cost = int.MaxValue;
+					_distance[i][j].PathIndices = new List<int>();
 				}
 			}
 		}
@@ -91,26 +92,31 @@ namespace FedoraDev.NodeEditor.Implementations
 				PathNode u = queue[uIndex];
 				queue.RemoveAt(uIndex);
 
-				if (u.Cost != _distance[u.NodeIndex][u.Bitmask].Cost)
+				if (u.Cost > _distance[u.NodeIndex][u.Bitmask].Cost)
 					continue;
 
 				foreach (IConnection connection in nodeWeb.Nodes[u.NodeIndex].Connections)
 				{
 					byte newBitmask = u.Bitmask;
-					int otherNodeIndex = Array.FindIndex(nodeWeb.Nodes, n => n == connection.GetOtherNode(nodeWeb.Nodes[u.NodeIndex]));
-					if (mustVisitNodeIndices.Contains(otherNodeIndex))
+					int v = Array.FindIndex(nodeWeb.Nodes, n => n == connection.GetOtherNode(nodeWeb.Nodes[u.NodeIndex]));
+
+					if (mustVisitNodeIndices.Contains(v))
 					{
-						byte vid = (byte)Array.FindIndex(mustVisitNodeIndices, n => n == otherNodeIndex);
+						byte vid = (byte)Array.FindIndex(mustVisitNodeIndices, n => n == v);
 						newBitmask = (byte)(u.Bitmask | (1 << vid));
 					}
 
 					int newCost = u.Cost + connection.Distance;
-					if (newCost < _distance[u.NodeIndex][newBitmask].Cost)
+					if (newCost < _distance[v][newBitmask].Cost)
 					{
-						List<int> newPath = u.PathIndices;
-						newPath.Insert(0, u.NodeIndex);
-						_distance[u.NodeIndex][newBitmask].Cost = newCost;
-						queue.Add(new PathNode(u.NodeIndex, newBitmask, newCost, newPath));
+						List<int> newPath = new List<int>(u.PathIndices);
+						newPath.Add(v);
+						List<string> pathnames = new List<string>();
+						for (int i = 0; i < newPath.Count; i++)
+							pathnames.Add(nodeWeb.Nodes[newPath[i]].Name);
+						_distance[v][newBitmask].Cost = newCost;
+						_distance[v][newBitmask].PathIndices = newPath;
+						queue.Add(new PathNode(v, newBitmask, newCost, newPath));
 					}
 				}
 			}
@@ -130,7 +136,7 @@ namespace FedoraDev.NodeEditor.Implementations
 
 			public RouteNode(int nodeIndex, int cost)
 			{
-				PathIndices = new List<int>() { nodeIndex };
+				PathIndices = new List<int>();
 				Cost = cost;
 			}
 		}

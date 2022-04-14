@@ -1,5 +1,7 @@
 using FedoraDev.NodeEditor.Implementations;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -36,6 +38,12 @@ namespace FedoraDev.NodeEditor.Editor
 		string _targetSaveLocation = "Example";
 		bool _isDraggingNode = false;
 		bool _isDraggingConnector = false;
+		bool _showPathingFlyout = false;
+
+		int _startNode;
+		int _targetNode;
+		List<int> _requiredNodes;
+		INode[] _path;
 		#endregion
 
 		#region Initialization
@@ -293,6 +301,64 @@ namespace FedoraDev.NodeEditor.Editor
 			{
 				NodeWeb.Offset = Vector2.zero + (position.size / 2);
 			}
+
+			if (_showPathingFlyout)
+				DrawPathingFlyout();
+			else
+				DontDrawPathingFlyout();
+		}
+
+		void DontDrawPathingFlyout()
+		{
+			DrawPathingButton(new Vector2(5, 5));
+		}
+
+		void DrawPathingFlyout()
+		{
+			float flyoutWidth = 150;
+			DrawPathingButton(new Vector2(flyoutWidth + 5, 5));
+			int elementCount = 3 + (_requiredNodes == null ? 0 : _requiredNodes.Count);
+			if (_requiredNodes?.Count < 8)
+				elementCount++;
+			float currentY = 5;
+			GUI.Box(new Rect(5, currentY, flyoutWidth, (elementCount * 30) + 5), "");
+			currentY += 5;
+
+			_startNode = EditorGUI.Popup(new Rect(10, currentY, flyoutWidth - 10, 25), _startNode, NodeWeb.Nodes.Select(n => n.Name).ToArray());
+			currentY += 30;
+			_targetNode = EditorGUI.Popup(new Rect(10, currentY, flyoutWidth - 10, 25), _targetNode, NodeWeb.Nodes.Select(n => n.Name).ToArray());
+			currentY += 30;
+
+			for (int i = 0; i < _requiredNodes.Count; i++)
+			{
+				int index = i;
+				_requiredNodes[i] = EditorGUI.Popup(new Rect(10, currentY, flyoutWidth - 30, 25), _requiredNodes[i], NodeWeb.Nodes.Select(n => n.Name).ToArray());
+				if (GUI.Button(new Rect(flyoutWidth - 20, currentY, 20, 18), "-")) _requiredNodes.RemoveAt(index);
+				currentY += 30;
+			}
+
+			if (_requiredNodes.Count < 8)
+			{
+				if (GUI.Button(new Rect(10, currentY, flyoutWidth - 10, 25), "+"))
+				{
+					_requiredNodes.Add(0);
+				}
+				currentY += 30;
+			}
+
+			if (GUI.Button(new Rect(10, currentY, flyoutWidth - 10, 25), "Find Path"))
+			{
+				_path = NodeWeb.GetPath(NodeWeb.Nodes[_startNode], NodeWeb.Nodes[_targetNode], NodeWeb.Nodes.Where((n, i) => _requiredNodes.Contains(i)).ToArray());
+
+				Debug.Log(string.Join(" => ", _path.Select(n => n.Name)));
+			}
+			currentY += 30;
+		}
+
+		void DrawPathingButton(Vector2 position)
+		{
+			if (GUI.Button(new Rect(position, new Vector2(25, 25)), _showPathingFlyout ? "<" : ">"))
+				_showPathingFlyout = !_showPathingFlyout;
 		}
 		#endregion
 		#endregion

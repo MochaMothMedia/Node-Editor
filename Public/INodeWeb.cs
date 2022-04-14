@@ -13,6 +13,6 @@ namespace FedoraDev.NodeEditor
         void RemoveNode(INode node);
         void AddConnection(IConnection connection);
         void RemoveConnection(IConnection connection);
-        INode[] GetPath(INode startNode, INode endNode);
+        INode[] GetPath(INode startNode, INode endNode, INode[] requiredNodes = null);
     }
 }

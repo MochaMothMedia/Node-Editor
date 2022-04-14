@@ -123,7 +123,7 @@ namespace FedoraDev.NodeEditor.Implementations
 		}
 		#endregion
 
-		public INode[] GetPath(INode startNode, INode endNode) => _pathingAlgorithm.GetPath(this, startNode, endNode);
+		public INode[] GetPath(INode startNode, INode endNode, INode[] requiredNodes = null) => _pathingAlgorithm.GetPath(this, startNode, endNode, requiredNodes);
 
 		#region Editor Junk
 		void SetSelfDirty()
