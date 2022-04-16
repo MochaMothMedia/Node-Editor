@@ -180,6 +180,7 @@ namespace FedoraDev.NodeEditor.Editor
 			DrawGrid(80, 0.4f, Color.gray);
 			DrawCenterLines(0.5f, Color.blue);
 			DrawConnections();
+			DrawPath();
 			DrawNodes();
 			DrawUI();
 
@@ -222,7 +223,6 @@ namespace FedoraDev.NodeEditor.Editor
 			Handles.BeginGUI();
 			Handles.color = new Color(color.r, color.g, color.b, opacity);
 			
-
 			float offsetX = Mathf.Round(NodeWeb.Offset.x);
 			float offsetY = Mathf.Round(NodeWeb.Offset.y);
 
@@ -257,8 +257,7 @@ namespace FedoraDev.NodeEditor.Editor
 				Vector2 centerPos = Vector2.Lerp(nodeAPos, nodeBPos, 0.5f) + new Vector2(0, -15);
 				Vector2 floatPos = centerPos + new Vector2(0, 15);
 
-				Handles.color = Color.white;
-				Handles.DrawLine(new Vector3(nodeAPos.x, nodeAPos.y, 0), new Vector3(nodeBPos.x, nodeBPos.y, 0));
+				DrawConnection(nodeAPos, nodeBPos, Color.white);
 
 				if (GUI.Button(new Rect(centerPos.x - 10, centerPos.y - 10, 20, 20), "x"))
 				{
@@ -270,6 +269,45 @@ namespace FedoraDev.NodeEditor.Editor
 
 				connection.Distance = EditorGUI.IntField(new Rect(floatPos.x - 25, floatPos.y, 50, 20), connection.Distance);
 			}
+		}
+
+		void DrawConnection(Vector2 posA, Vector2 posB, Color color)
+		{
+			Handles.color = color;
+			Handles.DrawLine(new Vector3(posA.x, posA.y, 0), new Vector3(posB.x, posB.y, 0));
+		}
+
+		void DrawPath()
+		{
+			if (_path == null || _path.Length == 0)
+				return;
+
+			for (int i = 0; i < _path.Length; i++)
+			{
+				if (i < _path.Length - 1)
+				{
+					// Draw connection to next node
+					Vector2 nodeAPos = NodeVisualPosition(_path[i].Position, _path[i].Size) + (_path[i].Size / 2);
+					Vector2 nodeBPos = NodeVisualPosition(_path[i + 1].Position, _path[i + 1].Size) + (_path[i + 1].Size / 2);
+
+					DrawConnection(nodeAPos, nodeBPos, Color.blue);
+				}
+
+				// Draw node
+				if (_path[i] == NodeWeb.Nodes[_startNode])
+					DrawPathNode(NodeVisualPosition(_path[i].Position, _path[i].Size), _path[i].Size, Color.green);
+				else if (_path[i] == NodeWeb.Nodes[_targetNode])
+					DrawPathNode(NodeVisualPosition(_path[i].Position, _path[i].Size), _path[i].Size, Color.red);
+				else if (_requiredNodes.Contains(Array.FindIndex(NodeWeb.Nodes, n => n ==_path[i])))
+					DrawPathNode(NodeVisualPosition(_path[i].Position, _path[i].Size), _path[i].Size, Color.blue);
+			}
+		}
+
+		void DrawPathNode(Vector2 location, Vector2 size, Color color)
+		{
+			Color transparent = color;
+			transparent.a = 0.4f;
+			EditorGUI.DrawRect(new Rect(location - new Vector2(5, 5), size + new Vector2(10, 10)), transparent);
 		}
 
 		void DrawNodes()
@@ -347,11 +385,7 @@ namespace FedoraDev.NodeEditor.Editor
 			}
 
 			if (GUI.Button(new Rect(10, currentY, flyoutWidth - 10, 25), "Find Path"))
-			{
 				_path = NodeWeb.GetPath(NodeWeb.Nodes[_startNode], NodeWeb.Nodes[_targetNode], NodeWeb.Nodes.Where((n, i) => _requiredNodes.Contains(i)).ToArray());
-
-				Debug.Log(string.Join(" => ", _path.Select(n => n.Name)));
-			}
 			currentY += 30;
 		}
 

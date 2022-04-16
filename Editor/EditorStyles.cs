@@ -40,5 +40,21 @@ namespace FedoraDev.NodeEditor.Editor
                 return _headerStyle;
 		    }
 	    }
+
+        static GUIStyle _pathStyle;
+        public static GUIStyle PathStyle
+		{
+            get
+			{
+                if (_pathStyle == null)
+				{
+                    _pathStyle = new GUIStyle();
+                    _pathStyle.normal.background = new Texture2D(1, 1);
+                    _pathStyle.normal.background.wrapMode = TextureWrapMode.Repeat;
+				}
+
+                return _pathStyle;
+			}
+		}
     }
 }
