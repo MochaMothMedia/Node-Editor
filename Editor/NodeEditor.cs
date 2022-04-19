@@ -375,7 +375,7 @@ namespace FedoraDev.NodeEditor.Editor
 				currentY += 30;
 			}
 
-			if (_requiredNodes.Count < 8)
+			if (_requiredNodes?.Count < 8)
 			{
 				if (GUI.Button(new Rect(10, currentY, flyoutWidth - 10, 25), "+"))
 				{
