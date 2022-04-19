@@ -42,7 +42,7 @@ namespace FedoraDev.NodeEditor.Editor
 
 		int _startNode;
 		int _targetNode;
-		List<int> _requiredNodes;
+		List<int> _requiredNodes = new List<int>();
 		INode[] _path;
 		#endregion
 
@@ -58,6 +58,7 @@ namespace FedoraDev.NodeEditor.Editor
                 nodeEditor.NodeWeb = nodeWeb;
                 nodeEditor.SaveSettings();
             }
+			nodeEditor._requiredNodes = new List<int>();
             nodeEditor.Initialize();
             nodeEditor.Show();
 		}
