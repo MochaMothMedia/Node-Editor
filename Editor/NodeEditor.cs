@@ -298,7 +298,7 @@ namespace FedoraDev.NodeEditor.Editor
 					DrawPathNode(NodeVisualPosition(_path[i].Position, _path[i].Size), _path[i].Size, Color.green);
 				else if (_path[i] == NodeWeb.Nodes[_targetNode])
 					DrawPathNode(NodeVisualPosition(_path[i].Position, _path[i].Size), _path[i].Size, Color.red);
-				else if (_requiredNodes.Contains(Array.FindIndex(NodeWeb.Nodes, n => n ==_path[i])))
+				else if (_requiredNodes != null && _requiredNodes.Contains(Array.FindIndex(NodeWeb.Nodes, n => n ==_path[i])))
 					DrawPathNode(NodeVisualPosition(_path[i].Position, _path[i].Size), _path[i].Size, Color.blue);
 			}
 		}
