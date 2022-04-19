@@ -385,7 +385,7 @@ namespace FedoraDev.NodeEditor.Editor
 			}
 
 			if (GUI.Button(new Rect(10, currentY, flyoutWidth - 10, 25), "Find Path"))
-				_path = NodeWeb.GetPath(NodeWeb.Nodes[_startNode], NodeWeb.Nodes[_targetNode], NodeWeb.Nodes.Where((n, i) => _requiredNodes.Contains(i)).ToArray());
+				_path = NodeWeb.GetPath(NodeWeb.Nodes[_startNode], NodeWeb.Nodes[_targetNode], _requiredNodes == null ? new INode[0] : NodeWeb.Nodes.Where((n, i) => _requiredNodes.Contains(i)).ToArray());
 			currentY += 30;
 		}
 
