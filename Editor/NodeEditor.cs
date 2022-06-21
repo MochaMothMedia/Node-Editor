@@ -1,4 +1,3 @@
-using FedoraDev.NodeEditor.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -291,7 +290,7 @@ namespace FedoraDev.NodeEditor.Editor
 					Vector2 nodeAPos = NodeVisualPosition(_path[i].Position, _path[i].Size) + (_path[i].Size / 2);
 					Vector2 nodeBPos = NodeVisualPosition(_path[i + 1].Position, _path[i + 1].Size) + (_path[i + 1].Size / 2);
 
-					DrawConnection(nodeAPos, nodeBPos, Color.blue);
+					DrawConnection(nodeAPos, nodeBPos, Color.yellow);
 				}
 
 				// Draw node
@@ -300,7 +299,7 @@ namespace FedoraDev.NodeEditor.Editor
 				else if (_path[i] == NodeWeb.Nodes[_targetNode])
 					DrawPathNode(NodeVisualPosition(_path[i].Position, _path[i].Size), _path[i].Size, Color.red);
 				else if (_requiredNodes != null && _requiredNodes.Contains(Array.FindIndex(NodeWeb.Nodes, n => n ==_path[i])))
-					DrawPathNode(NodeVisualPosition(_path[i].Position, _path[i].Size), _path[i].Size, Color.blue);
+					DrawPathNode(NodeVisualPosition(_path[i].Position, _path[i].Size), _path[i].Size, Color.yellow);
 			}
 		}
 
@@ -355,18 +354,25 @@ namespace FedoraDev.NodeEditor.Editor
 		void DrawPathingFlyout()
 		{
 			float flyoutWidth = 150;
-			DrawPathingButton(new Vector2(flyoutWidth + 5, 5));
+			DrawPathingButton(new Vector2(flyoutWidth + 10, 5));
 			int elementCount = 3 + (_requiredNodes == null ? 0 : _requiredNodes.Count);
 			if (_requiredNodes?.Count < 8)
 				elementCount++;
 			float currentY = 5;
-			GUI.Box(new Rect(5, currentY, flyoutWidth, (elementCount * 30) + 5), "");
+			GUI.Box(new Rect(5, currentY, flyoutWidth, (elementCount * 30) + 65), "");
 			currentY += 5;
 
+			EditorGUI.LabelField(new Rect(10, currentY, flyoutWidth - 10, 25), "Start Node");
+			currentY += 20;
 			_startNode = EditorGUI.Popup(new Rect(10, currentY, flyoutWidth - 10, 25), _startNode, NodeWeb.Nodes.Select(n => n.Name).ToArray());
 			currentY += 30;
+			EditorGUI.LabelField(new Rect(10, currentY, flyoutWidth - 10, 25), "Target Node");
+			currentY += 20;
 			_targetNode = EditorGUI.Popup(new Rect(10, currentY, flyoutWidth - 10, 25), _targetNode, NodeWeb.Nodes.Select(n => n.Name).ToArray());
 			currentY += 30;
+
+			EditorGUI.LabelField(new Rect(10, currentY, flyoutWidth - 10, 25), "Required Nodes");
+			currentY += 20;
 
 			for (int i = 0; i < _requiredNodes?.Count; i++)
 			{
