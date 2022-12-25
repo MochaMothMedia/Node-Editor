@@ -1,12 +1,12 @@
 {
-	"name": "com.fedoradev.nodeeditor",
+	"name": "com.mochamoth.nodeeditor",
 	"displayName": "Node Editor",
-	"version": "1.0.0",
-	"unity": "2020.3",
-	"unityRelease": "2f1",
+	"version": "2.0.0",
+	"unity": "2021.3",
+	"unityRelease": "16f1",
 	"description": "A simple node editor that can be extended. No base purpose is assumed.",
 	"author": {
-		"name": "Fedora Dev",
+		"name": "Mocha Moth",
 		"email": "fedora.game.dev@gmail.com"
 	}
 }

@@ -1,0 +1,19 @@
+{
+    "name": "_MochaMoth.NodeEditor.Editor",
+    "rootNamespace": "MochaMoth.NodeEditor.Editor",
+    "references": [
+        "GUID:6fd238f963f0b4241b0155896a5bfc30",
+        "GUID:6eae9c69c557e1c4c8588d76d7950bad"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

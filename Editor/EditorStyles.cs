@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace FedoraDev.NodeEditor.Editor
+namespace MochaMoth.NodeEditor.Editor
 {
     public static class EditorStyles
     {

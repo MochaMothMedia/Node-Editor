@@ -1,6 +1,6 @@
 using System;
 
-namespace FedoraDev.NodeEditor.Editor
+namespace MochaMoth.NodeEditor.Editor
 {
     public class ClearGUIException : Exception { }
 }

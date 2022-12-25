@@ -1,38 +1,71 @@
+using MochaMoth.NodeEditor.Nodes;
+using MochaMoth.NodeEditor.Connections;
+using MochaMoth.NodeEditor.NodeWebs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace FedoraDev.NodeEditor.Editor
+namespace MochaMoth.NodeEditor.Editor
 {
     public class NodeEditor : EditorWindow
     {
 		#region Properties
 		const string EDITOR_PREF_NODEWEB = "FedoraDev_NodeEditor_NodeWeb";
-		const string FACTORY_PATH = "Assets/Fedora Dev/";
+		const string FACTORY_PATH = "Assets/Mocha Moth";
 		const string FACTORY_NAME = "Node Editor Factory.asset";
-		static string FactoryAsset => $"{FACTORY_PATH}{FACTORY_NAME}";
+		static string FactoryAsset => $"{FACTORY_PATH}/{FACTORY_NAME}";
 		const int SNAP_VALUE = 20;
 		const int SNAP_OFFSET = 0;
 
 		INodeWeb NodeWeb { get; set; }
 
-		IFactory Factory
+		INodeFactory NodeFactory
 		{
 			get
 			{
-				if (_factory == null)
-					_factory = (IFactory)AssetDatabase.LoadAssetAtPath(FactoryAsset, typeof(IFactory));
+				if (_nodeFactory == null)
+					_nodeFactory = (INodeFactory)AssetDatabase.LoadAssetAtPath(FactoryAsset, typeof(INodeFactory));
 
-				if (_factory == null)
+				if (_nodeFactory == null)
 					throw new NullReferenceException($"No factory reference found at {FactoryAsset}. Please create one!");
 
-				return _factory;
+				return _nodeFactory;
 			}
 		}
 
-		IFactory _factory;
+		IAssetNodeFactory AssetNodeFactory
+		{
+			get
+			{
+				if (_assetNodeFactory == null)
+					_assetNodeFactory = (IAssetNodeFactory)AssetDatabase.LoadAssetAtPath(FactoryAsset, typeof(IAssetNodeFactory));
+
+				if (_assetNodeFactory == null)
+					throw new NullReferenceException($"No factory reference found at {FactoryAsset}. Please create one!");
+
+				return _assetNodeFactory;
+			}
+		}
+
+		IConnectionFactory ConnectionFactory
+		{
+			get
+			{
+				if (_connectionFactory == null)
+					_connectionFactory = (IConnectionFactory)AssetDatabase.LoadAssetAtPath(FactoryAsset, typeof(IConnectionFactory));
+
+				if (_connectionFactory == null)
+					throw new NullReferenceException($"No factory reference found at {FactoryAsset}. Please create one!");
+
+				return _connectionFactory;
+			}
+		}
+
+		INodeFactory _nodeFactory;
+		IAssetNodeFactory _assetNodeFactory;
+		IConnectionFactory _connectionFactory;
 		INode _draggedNode;
 		string _targetSaveLocation = "Example";
 		bool _isDraggingNode = false;
@@ -456,7 +489,7 @@ namespace FedoraDev.NodeEditor.Editor
 
 							currentEvent.Use();
 
-							IAssetNode assetNode = Factory.ProduceAssetNode();
+							IAssetNode assetNode = AssetNodeFactory.ProduceAssetNode();
 							assetNode.Asset = scriptable;
 							assetNode.Position = pos;
 							NodeWeb.AddNode(assetNode);
@@ -567,7 +600,7 @@ namespace FedoraDev.NodeEditor.Editor
 						if (node == _draggedNode)
 							return;
 
-						IConnection connection = Factory.ProduceConnection();
+						IConnection connection = ConnectionFactory.ProduceConnection();
 						connection.NodeA = _draggedNode;
 						connection.NodeB = node;
 

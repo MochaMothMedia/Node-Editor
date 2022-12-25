@@ -1,7 +1,8 @@
+using MochaMoth.NodeEditor.NodeWebs;
 using UnityEditor;
 using UnityEditor.Callbacks;
 
-namespace FedoraDev.NodeEditor.Editor
+namespace MochaMoth.NodeEditor.Editor
 {
     public class ScriptableNodeWebEditor : PropertyDrawer
     {

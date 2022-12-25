@@ -1,0 +1,16 @@
+{
+    "name": "_MochaMoth.NodeEditor.Connections.Implementations",
+    "rootNamespace": "_MochaMoth.NodeEditor.Connections.Implementations",
+    "references": [
+        "GUID:6fd238f963f0b4241b0155896a5bfc30"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
